@@ -55,21 +55,42 @@ router.post('/view', async function (req, res) {
   res.render('viewCertificate', { data: result });
 });
 
-router.get('/events', async function (req, res) {
-  const result = await myContract.getPastEvents('Issued', {
-    filter: { course: 'Certified Blockchain Associate' },
-    // filter: { course: 'Certified Ethereum Developer' },
-    // filter: { course: 'Blockchain Foundation' },
-    // filter: { course: 'Ethereum Fundamentals' },
+router.get('/records', function (req, res) {
+  res.render('viewRecords', {
+    data: [],
+    message: '',
+  });
+});
+
+router.post('/records', async function (req, res) {
+  const course = req.body.course;
+  console.log(course);
+
+  const results = await myContract.getPastEvents('Issued', {
+    filter: { course: course },
     fromBlock: 0,
     toBlock: 'latest',
   });
-  console.log(result);
   BigInt.prototype.toJSON = function () {
     return this.toString();
   };
 
-  res.send(result);
+  const returnValues = results.map((el) => {
+    return el.returnValues;
+  });
+  console.log(returnValues);
+
+  if (returnValues.length) {
+    res.render('viewRecords', {
+      course: course,
+      data: returnValues,
+    });
+  } else {
+    res.render('viewRecords', {
+      data: returnValues,
+      message: `Certificates issued in ${course}: ${returnValues.length}`,
+    });
+  }
 });
 
 export default router;
