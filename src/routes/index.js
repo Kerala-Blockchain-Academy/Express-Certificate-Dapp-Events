@@ -55,4 +55,21 @@ router.post('/view', async function (req, res) {
   res.render('viewCertificate', { data: result });
 });
 
+router.get('/events', async function (req, res) {
+  const result = await myContract.getPastEvents('Issued', {
+    filter: { course: 'Certified Blockchain Associate' },
+    // filter: { course: 'Certified Ethereum Developer' },
+    // filter: { course: 'Blockchain Foundation' },
+    // filter: { course: 'Ethereum Fundamentals' },
+    fromBlock: 0,
+    toBlock: 'latest',
+  });
+  console.log(result);
+  BigInt.prototype.toJSON = function () {
+    return this.toString();
+  };
+
+  res.send(result);
+});
+
 export default router;

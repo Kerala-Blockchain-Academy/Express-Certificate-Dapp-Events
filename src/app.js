@@ -2,8 +2,10 @@ import express, { json, urlencoded } from 'express';
 import createError from 'http-errors';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
+import chalk from 'chalk';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { myContract } from './instance.js';
 
 import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
@@ -41,5 +43,14 @@ app.use(function (err, req, res) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+(async function () {
+  console.log(chalk.bgBlue('Listening for Events...'));
+  myContract.events.Issued().on('data', (event) => {
+    console.log(chalk.bgGreen('**** EVENT OCCURED ****'));
+    console.log(event);
+    console.log(chalk.bgGreen('***********************'));
+  });
+})();
 
 export default app;
