@@ -59,8 +59,6 @@ Start the application
 npm run dev
 ```
 
-Visit <http://localhost:8080/events> to view events
-
 ## License
 
 Distributed under the MIT License.
